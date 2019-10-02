@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html lang="ru-RU">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <title>Новости «  Федерация акробатического Рок-н-Ролла города Москвы</title>
+    <link rel="pingback" href="http://mosfarr.ru/xmlrpc.php">
+    <link href="http://mosfarr.ru/wp-content/themes/mosfarr-template/style.css" rel="stylesheet">
+
+    <!-- НовостиНовости
