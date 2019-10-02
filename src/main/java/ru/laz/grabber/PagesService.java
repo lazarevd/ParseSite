@@ -32,29 +32,29 @@ public class PagesService {
     public List<NewsBlock> parseHtml(String html) {
         Document doc = Jsoup.parseBodyFragment(html);
         Element body = doc.body();
-        Elements elems = body.getElementsByClass("container")
-                .first().getElementsByClass("wrapper")
-                .first().getElementsByClass("wrapper")
-                .first().getElementsByClass("col-md-8")
-                .first().getElementsByClass("post")
-                .first().getElementsByTag("article");
+        Elements elems = body.getElementsByTag("main")
+                .first().getElementsByClass("item-block item-news");
         List<NewsBlock> retList = new ArrayList<>();
 
         System.out.println("elems " + elems.size());
         for (Element el : elems) {
-            String title = el.getElementsByClass("entry-title").first().getElementsByTag("a").first().text();
+            Element nElementHref = el.getElementsByTag("a").first();
+            String date = el.getElementsByClass("date").text();
+            String url = nElementHref.attr("href");
+            String title = nElementHref.getElementsByTag("h2").first().text();
             NewsBlock nb = new NewsBlock();
-            nb.setDate("2019-06-09 12:00");
             nb.setTitle(title);
-            nb.setBody("sample body");
-            //System.out.println("fethced: " + nb);
+            nb.setUrl(url);
+            nb.setDate(date);
+
+            System.out.println("fethced: " + nb);
             retList.add(nb);
         }
         return retList;
     }
 
 
-    @Scheduled(fixedDelay = 6000)
+    @Scheduled(fixedDelay = 10000)
     public void getPageContent() {
 
         BoundRequestBuilder request = client.prepareGet("http://mosfarr.ru/category/новости/");
@@ -94,11 +94,11 @@ public class PagesService {
             @Override
             public Object onCompleted() throws Exception {
                 if (status == 200) {
-                    System.out.println("save");
+                    System.out.println("save " + sb.toString().substring(0, 50));
                     List<NewsBlock> news = parseHtml(sb.toString());
                     for (NewsBlock nb : news) {
                         System.out.println("saving: " + nb);
-                        newsBlockRepo.insertOrIgnore(nb.getDate(), nb.getTitle(), nb.getBody());
+                        newsBlockRepo.insertOrIgnore(nb.getDate(), nb.getTitle(), nb.getUrl(), nb.getBody());
                     }
                 }
                 return null;

@@ -8,12 +8,15 @@ import javax.persistence.*;
 public class NewsBlock {
 
     @Id
+    @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
         private int id;
     @Column(name = "date")
         private String date = "";//for unique constaint in sqlite
     @Column(name = "title")
         private String title = "";
+    @Column(name = "url")
+        private String url = "";
     @Column(name = "body")
         private String body = "";
 
@@ -49,6 +52,14 @@ public class NewsBlock {
         this.body = body;
     }
 
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
+
 
     @Override
     public boolean equals(Object o) {
@@ -63,7 +74,7 @@ public class NewsBlock {
 
     @Override
     public String toString() {
-        return "date: " + date + " title: "+title + " text: " + body;
+        return "date: " + date + " title: "+title + " url: " + url + " text: " + body;
     }
 }
 

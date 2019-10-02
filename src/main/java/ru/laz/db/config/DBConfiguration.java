@@ -10,7 +10,7 @@ import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 
 import javax.sql.DataSource;
 
-@EnableJpaRepositories
+
 @Configuration
 public class DBConfiguration {
 
