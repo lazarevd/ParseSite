@@ -6,6 +6,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ru.laz.db.NewsBlockRepo;
 
+import java.util.List;
+
 @RestController
 public class ParseController {
 
@@ -21,5 +23,10 @@ public class ParseController {
         return null;
     }
 
+
+    @RequestMapping("/getUnsent")
+    public String getUnsent() throws Exception {
+        return objectMapper.writeValueAsString(newsBlockRepo.findBySent(0));
+    }
 
 }
