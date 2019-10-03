@@ -98,7 +98,7 @@ public class PagesService {
                     List<NewsBlock> news = parseHtml(sb.toString());
                     for (NewsBlock nb : news) {
                         System.out.println("saving: " + nb);
-                        newsBlockRepo.insertOrIgnore(nb.getDate(), nb.getTitle(), nb.getUrl(), nb.getBody());
+                        newsBlockRepo.insertOrIgnore(nb.getDate(), nb.getTitle(), nb.getUrl(), nb.getBody(), nb.getSent());
                     }
                 }
                 return null;

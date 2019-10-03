@@ -18,7 +18,7 @@ public interface NewsBlockRepo extends CrudRepository<NewsBlock,Integer> {
 
     @Modifying
     @Transactional
-    @Query(value = "insert or replace into news_blocks (date, title, url, body) values (:date, :title, :url, :body)", nativeQuery = true)
-    public void insertOrIgnore(@Param("date") String date, @Param("title") String title, @Param("url") String url, @Param("body") String body);
+    @Query(value = "insert or replace into news_blocks (date, title, url, body, sent) values (:date, :title, :url, :body, :sent)", nativeQuery = true)
+    public void insertOrIgnore(@Param("date") String date, @Param("title") String title, @Param("url") String url, @Param("body") String body, @Param("sent") int sent);
 
 }

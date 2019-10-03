@@ -1,8 +1,11 @@
-CREATE TABLE news_blocks (
-id INTEGER PRIMARY KEY NOT NULL,
-is_processed integer not null,
-title varchar,
-url varchar)
+create table news_blocks
+(_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    date TEXT,
+    title TEXT,
+    url TEXT,
+    body TEXT,
+    sent INEGER,
+    UNIQUE(title, url, body))
 
 
 INSERT INTO news_blocks(is_processed, title, url)

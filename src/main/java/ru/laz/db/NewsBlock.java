@@ -1,6 +1,8 @@
 package ru.laz.db;
 
 
+import org.hibernate.annotations.ColumnDefault;
+
 import javax.persistence.*;
 
 @Entity
@@ -19,6 +21,9 @@ public class NewsBlock {
         private String url = "";
     @Column(name = "body")
         private String body = "";
+    @Column(name = "sent")
+        private int sent = 0;
+
 
 
     public long getId() {
@@ -60,6 +65,13 @@ public class NewsBlock {
         this.url = url;
     }
 
+    public int getSent() {
+        return sent;
+    }
+
+    public void setSent(int sent) {
+        this.sent = sent;
+    }
 
     @Override
     public boolean equals(Object o) {
@@ -68,7 +80,7 @@ public class NewsBlock {
             return false;
         }
         NewsBlock nb = (NewsBlock) o;
-        return this.title.equals(nb.getTitle()) && this.body.equals(nb.getBody());
+        return this.url.equals(nb.getUrl()) && this.title.equals(nb.getTitle()) && this.body.equals(nb.getBody() );
     }
 
 

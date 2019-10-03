@@ -1,1 +1,1 @@
-mvn package && java -jar target/parse-site-0.1.0.jar
+mvn clean package && java -jar target/parse-site-0.1.0.jar
