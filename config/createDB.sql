@@ -1,5 +1,5 @@
 create table news_blocks
-(_id INTEGER PRIMARY KEY AUTOINCREMENT,
+(id INTEGER,
     date TEXT,
     title TEXT,
     url TEXT,
