@@ -24,5 +24,8 @@ public interface NewsBlockRepo extends CrudRepository<NewsBlock,Integer> {
     @Query( "select nb from NewsBlock nb where sent = :sent" )
     List<NewsBlock> findBySent(int sent);
 
+    Iterable<NewsBlock> findAll();
+
+
 
 }

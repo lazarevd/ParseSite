@@ -46,8 +46,6 @@ public class PagesService {
             nb.setTitle(title);
             nb.setUrl(url);
             nb.setDate(date);
-
-            System.out.println("fethced: " + nb);
             retList.add(nb);
         }
         return retList;
@@ -94,11 +92,10 @@ public class PagesService {
             @Override
             public Object onCompleted() throws Exception {
                 if (status == 200) {
-                    System.out.println("save " + sb.toString().substring(0, 50));
                     List<NewsBlock> news = parseHtml(sb.toString());
+                    System.out.println("Fetched: " + news.size());
                     for (NewsBlock nb : news) {
-                        System.out.println("saving: " + nb);
-                        newsBlockRepo.insertOrIgnore(nb.getDate(), nb.getTitle(), nb.getUrl(), nb.getBody(), nb.getSent());
+                        newsBlockRepo.save(nb);
                     }
                 }
                 return null;

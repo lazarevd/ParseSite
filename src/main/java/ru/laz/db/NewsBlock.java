@@ -12,6 +12,7 @@ public class NewsBlock {
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Basic
         private int id;
     @Column(name = "date")
         private String date = "";//for unique constaint in sqlite
