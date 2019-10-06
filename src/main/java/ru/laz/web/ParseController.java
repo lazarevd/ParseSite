@@ -4,11 +4,14 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.repository.query.Param;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import ru.laz.db.NewsBlock;
 import ru.laz.db.NewsBlockRepo;
 
+import javax.transaction.Transactional;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 public class ParseController {
@@ -31,9 +34,14 @@ public class ParseController {
         return objectMapper.writeValueAsString(newsBlockRepo.findBySent(0));
     }
 
+    @Transactional
     @RequestMapping("/setSent")
-    public String setSent() throws Exception {
-        return objectMapper.writeValueAsString(newsBlockRepo.findBySent(0));
+    public String setSent(@RequestParam int id) throws Exception {
+        NewsBlock nb = newsBlockRepo.findById(id).get();
+        if (null != nb)
+        {nb.setSent(1);}
+        newsBlockRepo.save(nb);
+        return objectMapper.writeValueAsString(nb);
     }
 
 }

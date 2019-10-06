@@ -22,6 +22,8 @@ public class NewsBlock {
         private String url = "";
     @Column(name = "body")
         private String body = "";
+    @Column(name = "processing")
+        private int processing = 0;
     @Column(name = "sent")
         private int sent = 0;
 
@@ -72,6 +74,14 @@ public class NewsBlock {
 
     public void setSent(int sent) {
         this.sent = sent;
+    }
+
+    public int getProcessing() {
+        return processing;
+    }
+
+    public void setProcessing(int processing) {
+        this.processing = processing;
     }
 
     @Override
