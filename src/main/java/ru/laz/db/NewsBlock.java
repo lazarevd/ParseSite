@@ -2,6 +2,7 @@ package ru.laz.db;
 
 
 import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 
@@ -11,8 +12,6 @@ public class NewsBlock {
 
     @Id
     @Column(name = "id")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Basic
         private int id;
     @Column(name = "date")
         private String date = "";//for unique constaint in sqlite
@@ -66,6 +65,7 @@ public class NewsBlock {
 
     public void setUrl(String url) {
         this.url = url;
+        id = url.hashCode();
     }
 
     public int getSent() {
@@ -91,7 +91,7 @@ public class NewsBlock {
             return false;
         }
         NewsBlock nb = (NewsBlock) o;
-        return this.url.equals(nb.getUrl()) && this.title.equals(nb.getTitle()) && this.body.equals(nb.getBody() );
+        return this.id == nb.getId() && this.url.equals(nb.getUrl()) && this.title.equals(nb.getTitle()) && this.body.equals(nb.getBody() );
     }
 
 

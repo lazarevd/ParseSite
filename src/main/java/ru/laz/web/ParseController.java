@@ -34,6 +34,12 @@ public class ParseController {
         return objectMapper.writeValueAsString(newsBlockRepo.findBySent(0));
     }
 
+    @RequestMapping("/getUnprocessing")
+    public String getUnprocessing() throws Exception {
+        return objectMapper.writeValueAsString(newsBlockRepo.findByProcessing(0));
+    }
+
+
     @Transactional
     @RequestMapping("/setSent")
     public String setSent(@RequestParam int id) throws Exception {
