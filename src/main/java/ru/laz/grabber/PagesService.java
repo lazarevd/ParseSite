@@ -20,8 +20,6 @@ import java.util.List;
 @Service
 public class PagesService {
 
-
-
     DefaultAsyncHttpClientConfig.Builder clientBuilder = Dsl.config().setConnectTimeout(500);
     AsyncHttpClient client = Dsl.asyncHttpClient(clientBuilder);
 
@@ -52,7 +50,7 @@ public class PagesService {
     }
 
 
-    @Scheduled(fixedDelay = 10000)
+    @Scheduled(fixedDelay = 30000)
     public void getPageContent() {
         BoundRequestBuilder request = client.prepareGet("http://mosfarr.ru/category/новости/");
         request.execute(new AsyncHandler<Object>() {

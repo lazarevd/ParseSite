@@ -11,15 +11,12 @@ import java.util.concurrent.TimeoutException;
 @Component
 public class RabbitMqClient {
 
-
     public void init()  {
     try {
         ConnectionFactory factory = new ConnectionFactory();
         factory.setHost("localhost");
-
         Connection connection = factory.newConnection();
         Channel channel = connection.createChannel();
-
         channel.queueDeclare("NB_QUEUE", false, false, false, null);
         String message = "Hello World!";
         channel.basicPublish("", "NB_QUEUE", null, message.getBytes());
@@ -28,5 +25,4 @@ public class RabbitMqClient {
         e.printStackTrace();
     }
     }
-
     }

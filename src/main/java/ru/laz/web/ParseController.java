@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import ru.laz.db.NewsBlock;
 import ru.laz.db.NewsBlockRepo;
+import ru.laz.mq.MQSenderService;
 import ru.laz.mq.RabbitMqClient;
 
 import javax.transaction.Transactional;
@@ -23,7 +24,10 @@ public class ParseController {
     ObjectMapper objectMapper;
 
     @Autowired
-    RabbitMqClient rabbitMqClient;
+    MQSenderService mqSenderService;
+
+    @Autowired
+    protected RabbitMqClient rabbitMqClient;
 
     @RequestMapping("/getAllNews")
     public String getDbJson() throws Exception {
@@ -50,6 +54,24 @@ public class ParseController {
         NewsBlock nb = newsBlockRepo.findById(id).get();
         if (null != nb)
         {nb.setSent(1);}
+        newsBlockRepo.save(nb);
+        rabbitMqClient.init();
+        return objectMapper.writeValueAsString(nb);
+    }
+
+
+    @RequestMapping("/startSend")
+    public void startSend() {
+        mqSenderService.startSend();
+    }
+
+
+    @Transactional
+    @RequestMapping("/setProcessing")
+    public String setProcessing(@RequestParam int id) throws Exception {
+        NewsBlock nb = newsBlockRepo.findById(id).get();
+        if (null != nb)
+        {nb.setProcessing(1);}
         newsBlockRepo.save(nb);
         rabbitMqClient.init();
         return objectMapper.writeValueAsString(nb);
