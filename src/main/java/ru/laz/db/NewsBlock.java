@@ -27,8 +27,7 @@ public class NewsBlock {
         private int sent = 0;
 
 
-
-    public long getId() {
+    public int getId() {
         return id;
     }
 

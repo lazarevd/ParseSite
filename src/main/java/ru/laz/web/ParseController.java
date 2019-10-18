@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import ru.laz.db.NewsBlock;
 import ru.laz.db.NewsBlockRepo;
+import ru.laz.mq.RabbitMqClient;
 
 import javax.transaction.Transactional;
 import java.util.List;
@@ -20,6 +21,9 @@ public class ParseController {
     NewsBlockRepo newsBlockRepo;
     @Autowired
     ObjectMapper objectMapper;
+
+    @Autowired
+    RabbitMqClient rabbitMqClient;
 
     @RequestMapping("/getAllNews")
     public String getDbJson() throws Exception {
@@ -47,6 +51,7 @@ public class ParseController {
         if (null != nb)
         {nb.setSent(1);}
         newsBlockRepo.save(nb);
+        rabbitMqClient.init();
         return objectMapper.writeValueAsString(nb);
     }
 

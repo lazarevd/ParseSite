@@ -54,7 +54,6 @@ public class PagesService {
 
     @Scheduled(fixedDelay = 10000)
     public void getPageContent() {
-
         BoundRequestBuilder request = client.prepareGet("http://mosfarr.ru/category/новости/");
         request.execute(new AsyncHandler<Object>() {
             int status;
@@ -90,12 +89,16 @@ public class PagesService {
             }
 
             @Override
-            public Object onCompleted() throws Exception {
+            public Object onCompleted() {
                 if (status == 200) {
                     List<NewsBlock> news = parseHtml(sb.toString());
                     System.out.println("Fetched: " + news.size());
                     for (NewsBlock nb : news) {
-                        newsBlockRepo.save(nb);
+                        try {
+                            newsBlockRepo.insertF(nb);
+                        } catch (Exception e) {
+                            System.out.println("Fuck " + e.toString());
+                        }
                     }
                 }
                 return null;
