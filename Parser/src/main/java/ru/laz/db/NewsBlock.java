@@ -5,10 +5,11 @@ import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
+import java.io.Serializable;
 
 @Entity
 @Table(name = "news_blocks")
-public class NewsBlock {
+public class NewsBlock implements Serializable {
 
     @Id
     @Column(name = "id")

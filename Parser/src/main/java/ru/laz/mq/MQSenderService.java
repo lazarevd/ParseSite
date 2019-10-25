@@ -1,5 +1,6 @@
 package ru.laz.mq;
 
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -21,20 +22,26 @@ public class MQSenderService {
     @Autowired
     NewsBlockRepo newsBlockRepo;
 
+    @Autowired
+    RabbitTemplate rabbitTemplate;
+
     private Map<Integer, Long> processTimes = new HashMap<>();
 
     long expiryTime = 3000;
 
-    //@Scheduled(fixedDelay = 10000)
+    @Scheduled(fixedDelay = 10000)
     @Transactional
     public void startSend() {
         List<NewsBlock> unsent = newsBlockRepo.findBySentAndProcessing(0, 0);
         unsent.forEach(nb -> {
             nb.setProcessing(1);
+            System.out.println("start send" + nb);
+            rabbitTemplate.convertAndSend(nb);
             synchronized (processTimes) {
                 processTimes.put(nb.getId(), System.currentTimeMillis());
             }
-            System.out.println("start send" + nb);});
+        });
+        newsBlockRepo.saveAll(unsent);
     }
 
 
