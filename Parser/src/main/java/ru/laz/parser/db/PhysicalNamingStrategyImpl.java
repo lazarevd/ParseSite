@@ -1,13 +1,12 @@
-package ru.laz.db;
+package ru.laz.parser.db;
 
 import org.hibernate.boot.model.naming.Identifier;
 import org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl;
 import org.hibernate.engine.jdbc.env.spi.JdbcEnvironment;
 
 import java.io.Serializable;
-import java.util.Locale;
 
-    public class PhysicalNamingStrategyImpl extends PhysicalNamingStrategyStandardImpl implements Serializable {
+public class PhysicalNamingStrategyImpl extends PhysicalNamingStrategyStandardImpl implements Serializable {
 
         public static final PhysicalNamingStrategyImpl INSTANCE = new PhysicalNamingStrategyImpl();
 

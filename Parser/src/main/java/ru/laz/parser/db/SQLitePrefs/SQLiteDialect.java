@@ -1,4 +1,4 @@
-package ru.laz.db.SQLitePrefs;
+package ru.laz.parser.db.SQLitePrefs;
 
 import org.hibernate.dialect.Dialect;
 import org.hibernate.dialect.function.SQLFunctionTemplate;

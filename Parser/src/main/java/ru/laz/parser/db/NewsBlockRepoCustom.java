@@ -1,4 +1,4 @@
-package ru.laz.db;
+package ru.laz.parser.db;
 
 public interface NewsBlockRepoCustom {
 

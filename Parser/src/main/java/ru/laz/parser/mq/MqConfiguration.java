@@ -1,4 +1,4 @@
-package ru.laz.mq;
+package ru.laz.parser.mq;
 
 import org.springframework.amqp.core.Queue;
 import org.springframework.beans.factory.annotation.Value;
@@ -8,7 +8,7 @@ import org.springframework.context.annotation.Configuration;
 
 
 @Configuration
-public class MQConfiguration {
+public class MqConfiguration {
 
 
     @Value( "${parser.rabbitmq.host}" )

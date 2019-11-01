@@ -1,14 +1,15 @@
-package ru.laz.web;
+package ru.laz.parser.web;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import ru.laz.db.NewsBlock;
-import ru.laz.db.NewsBlockRepo;
-import ru.laz.mq.MQSenderService;
+import ru.laz.parser.db.NewsBlock;
+import ru.laz.parser.db.NewsBlockRepo;
+import ru.laz.parser.mq.MqSenderService;
 
 import javax.transaction.Transactional;
 import java.util.List;
@@ -22,7 +23,7 @@ public class ParseController {
     ObjectMapper objectMapper;
 
     @Autowired
-    MQSenderService mqSenderService;
+    MqSenderService mqSenderService;
 
     @Autowired
     RabbitTemplate rabbitTemplate;
@@ -59,8 +60,10 @@ public class ParseController {
 
 
     @RequestMapping("/startSend")
-    public void startSend() {
-        mqSenderService.startSend();
+    public ResponseEntity startSend() {
+
+        List<NewsBlock> sent = mqSenderService.startSend();
+        return ResponseEntity.ok("sent: " + sent.size());
     }
 
 

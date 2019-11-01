@@ -1,4 +1,4 @@
-package ru.laz.db;
+package ru.laz.parser.db;
 
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;

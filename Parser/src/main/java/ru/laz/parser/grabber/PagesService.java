@@ -1,4 +1,4 @@
-package ru.laz.grabber;
+package ru.laz.parser.grabber;
 
 import io.netty.handler.codec.http.HttpHeaders;
 import org.asynchttpclient.*;
@@ -11,8 +11,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
-import ru.laz.db.NewsBlock;
-import ru.laz.db.NewsBlockRepo;
+import ru.laz.parser.db.NewsBlock;
+import ru.laz.parser.db.NewsBlockRepo;
 
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;

@@ -1,4 +1,4 @@
-package ru.laz.db.SQLitePrefs;
+package ru.laz.parser.db.SQLitePrefs;
 
 import org.hibernate.MappingException;
 import org.hibernate.dialect.identity.IdentityColumnSupportImpl;

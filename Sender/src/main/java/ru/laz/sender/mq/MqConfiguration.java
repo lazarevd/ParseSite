@@ -1,9 +1,8 @@
-package ru.laz.mq;
+package ru.laz.sender.mq;
 
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.core.MessageListener;
 import org.springframework.amqp.core.Queue;
-import org.springframework.amqp.rabbit.AsyncRabbitTemplate;
 import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -15,7 +14,7 @@ import org.springframework.context.annotation.Configuration;
 
 
 @Configuration
-public class MQConfiguration {
+public class MqConfiguration {
 
     @Autowired
     RabbitTemplate rabbitTemplate;
@@ -33,7 +32,7 @@ public class MQConfiguration {
     public SimpleMessageListenerContainer messageListenerContainer() {
         SimpleMessageListenerContainer container = new SimpleMessageListenerContainer();
         container.setConnectionFactory(rabbitConnectionFactory());
-        container.setQueueNames("some.queue");
+        container.setQueueNames("toSender");
         container.setMessageListener(exampleListener());
         return container;
     }

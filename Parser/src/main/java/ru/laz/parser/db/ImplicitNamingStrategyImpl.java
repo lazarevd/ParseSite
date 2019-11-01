@@ -1,10 +1,8 @@
-package ru.laz.db;
+package ru.laz.parser.db;
 
 import org.hibernate.boot.model.naming.Identifier;
 import org.hibernate.boot.model.naming.ImplicitNamingStrategyJpaCompliantImpl;
 import org.hibernate.boot.spi.MetadataBuildingContext;
-
-import java.util.Locale;
 
 public class ImplicitNamingStrategyImpl extends ImplicitNamingStrategyJpaCompliantImpl {
 

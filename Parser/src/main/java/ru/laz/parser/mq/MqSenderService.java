@@ -1,29 +1,26 @@
-package ru.laz.mq;
+package ru.laz.parser.mq;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.core.AmqpTemplate;
-import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.laz.Application;
-import ru.laz.db.NewsBlock;
-import ru.laz.db.NewsBlockRepo;
+import ru.laz.parser.db.NewsBlock;
+import ru.laz.parser.db.NewsBlockRepo;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 @Service
-public class MQSenderService {
+public class MqSenderService {
 
-    private static final Logger logger = LoggerFactory.getLogger(MQSenderService.class);
+    private static final Logger logger = LoggerFactory.getLogger(MqSenderService.class);
 
     @Autowired
     NewsBlockRepo newsBlockRepo;
@@ -33,11 +30,13 @@ public class MQSenderService {
 
     private Map<Integer, Long> processTimes = new HashMap<>();
 
-    long expiryTime = 3000;
+    long expiryTime = 30000;
 
-    @Scheduled(fixedDelay = 10000)
+
+
+    //@Scheduled(fixedDelay = 10000)
     @Transactional
-    public void startSend() {
+    public List<NewsBlock> startSend() {
         List<NewsBlock> unsent = newsBlockRepo.findBySentAndProcessing(0, 0);
         unsent.forEach(nb -> {
             nb.setProcessing(1);
@@ -48,18 +47,21 @@ public class MQSenderService {
             }
         });
         newsBlockRepo.saveAll(unsent);
+        return unsent;
     }
 
 
-    @Scheduled(fixedDelay = 5000)
+    @Scheduled(fixedDelay = 1000)
     @Transactional
     public void processExpires() {
         List<Integer> ids = new ArrayList<>();
+        synchronized (processTimes) {
             processTimes.entrySet().forEach(en -> {
                 if (isExpired(en.getKey())) {
                     ids.add(en.getKey());
                 }
             });
+        }
 
         List<NewsBlock> news = StreamSupport.stream(newsBlockRepo.findAll().spliterator(), false)
                 .filter(nb -> isExpired(nb.getId()))

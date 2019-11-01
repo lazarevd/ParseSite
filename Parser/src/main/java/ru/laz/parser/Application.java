@@ -1,4 +1,4 @@
-package ru.laz;
+package ru.laz.parser;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

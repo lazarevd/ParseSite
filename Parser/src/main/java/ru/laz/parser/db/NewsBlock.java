@@ -1,8 +1,5 @@
-package ru.laz.db;
+package ru.laz.parser.db;
 
-
-import org.hibernate.annotations.ColumnDefault;
-import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.io.Serializable;
