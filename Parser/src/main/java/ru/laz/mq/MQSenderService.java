@@ -1,10 +1,14 @@
 package ru.laz.mq;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.laz.Application;
 import ru.laz.db.NewsBlock;
 import ru.laz.db.NewsBlockRepo;
 
@@ -19,11 +23,13 @@ import java.util.stream.StreamSupport;
 @Service
 public class MQSenderService {
 
+    private static final Logger logger = LoggerFactory.getLogger(MQSenderService.class);
+
     @Autowired
     NewsBlockRepo newsBlockRepo;
 
     @Autowired
-    RabbitTemplate rabbitTemplate;
+    AmqpTemplate rabbitTemplate;
 
     private Map<Integer, Long> processTimes = new HashMap<>();
 
@@ -35,7 +41,7 @@ public class MQSenderService {
         List<NewsBlock> unsent = newsBlockRepo.findBySentAndProcessing(0, 0);
         unsent.forEach(nb -> {
             nb.setProcessing(1);
-            System.out.println("start send" + nb);
+            logger.debug("start send" + nb);
             rabbitTemplate.convertAndSend(nb);
             synchronized (processTimes) {
                 processTimes.put(nb.getId(), System.currentTimeMillis());

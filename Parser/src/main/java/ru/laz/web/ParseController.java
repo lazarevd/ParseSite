@@ -1,19 +1,17 @@
 package ru.laz.web;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.repository.query.Param;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import ru.laz.db.NewsBlock;
 import ru.laz.db.NewsBlockRepo;
 import ru.laz.mq.MQSenderService;
-import ru.laz.mq.RabbitMqClient;
 
 import javax.transaction.Transactional;
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 public class ParseController {
@@ -27,7 +25,7 @@ public class ParseController {
     MQSenderService mqSenderService;
 
     @Autowired
-    protected RabbitMqClient rabbitMqClient;
+    RabbitTemplate rabbitTemplate;
 
     @RequestMapping("/getAllNews")
     public String getDbJson() throws Exception {
@@ -55,7 +53,7 @@ public class ParseController {
         if (null != nb)
         {nb.setSent(1);}
         newsBlockRepo.save(nb);
-        rabbitMqClient.init();
+        rabbitTemplate.convertAndSend(nb);
         return objectMapper.writeValueAsString(nb);
     }
 
@@ -73,7 +71,7 @@ public class ParseController {
         if (null != nb)
         {nb.setProcessing(1);}
         newsBlockRepo.save(nb);
-        rabbitMqClient.init();
+        rabbitTemplate.convertAndSend(nb);
         return objectMapper.writeValueAsString(nb);
     }
 

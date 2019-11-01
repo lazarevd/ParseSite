@@ -1,5 +1,7 @@
 package ru.laz;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.scheduling.annotation.EnableScheduling;
@@ -11,11 +13,11 @@ import java.io.File;
 //@EnableJpaRepositories //redundant with jpa boot starter
 @SpringBootApplication
 public class Application {
-
+    private static final Logger logger = LoggerFactory.getLogger(Application.class);
 
     public static void main(String[] args) {
         SpringApplication.run(Application.class, args);
-        System.out.println(new File("./").getAbsolutePath());
+        logger.debug((new File("./").getAbsolutePath()));
     }
 
 }

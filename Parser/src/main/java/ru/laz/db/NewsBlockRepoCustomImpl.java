@@ -1,5 +1,7 @@
 package ru.laz.db;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -8,19 +10,19 @@ import javax.persistence.PersistenceContext;
 
 public class NewsBlockRepoCustomImpl implements NewsBlockRepoCustom {
 
+    private static final Logger logger = LoggerFactory.getLogger(NewsBlockRepoCustomImpl.class);
     @PersistenceContext
     EntityManager em;
     @Override
     @Transactional(isolation= Isolation.SERIALIZABLE)
     public void insertF(NewsBlock nb) {
         NewsBlock nbl = em.find(NewsBlock.class, nb.getId());
-        System.out.println(nbl);
         //em.detach(nbl);
         if (null == nbl) {
-            System.out.println("Not Exist! " + nb.getId());
+            logger.debug("Not Exist! " + nb.getId());
             em.persist(nb);
         } else {
-            System.out.println("Exist " + nb.getId());
+            logger.debug("Exist " + nb.getId());
         }
 
     }
