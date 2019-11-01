@@ -5,13 +5,14 @@ import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.scheduling.annotation.EnableScheduling;
+import ru.laz.common.configuration.CommonConfiguration;
 
 import java.io.File;
 
 
 @EnableScheduling
 //@EnableJpaRepositories //redundant with jpa boot starter
-@SpringBootApplication
+@SpringBootApplication(scanBasePackages = "ru.laz")//for common module configuration
 public class Application {
     private static final Logger logger = LoggerFactory.getLogger(Application.class);
 

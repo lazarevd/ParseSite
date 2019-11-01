@@ -7,7 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import ru.laz.parser.db.NewsBlock;
+import ru.laz.common.models.NewsBlockEntity;
 import ru.laz.parser.db.NewsBlockRepo;
 import ru.laz.parser.mq.MqSenderService;
 
@@ -30,8 +30,8 @@ public class ParseController {
 
     @RequestMapping("/getAllNews")
     public String getDbJson() throws Exception {
-        Iterable<NewsBlock> it = newsBlockRepo.findAll();
-        List<NewsBlock> nBlocks  = (List<NewsBlock>) newsBlockRepo.findAll();
+        Iterable<NewsBlockEntity> it = newsBlockRepo.findAll();
+        List<NewsBlockEntity> nBlocks  = (List<NewsBlockEntity>) newsBlockRepo.findAll();
         return objectMapper.writeValueAsString(nBlocks);
     }
 
@@ -50,7 +50,7 @@ public class ParseController {
     @Transactional
     @RequestMapping("/setSent")
     public String setSent(@RequestParam int id) throws Exception {
-        NewsBlock nb = newsBlockRepo.findById(id).get();
+        NewsBlockEntity nb = newsBlockRepo.findById(id).get();
         if (null != nb)
         {nb.setSent(1);}
         newsBlockRepo.save(nb);
@@ -62,7 +62,7 @@ public class ParseController {
     @RequestMapping("/startSend")
     public ResponseEntity startSend() {
 
-        List<NewsBlock> sent = mqSenderService.startSend();
+        List<NewsBlockEntity> sent = mqSenderService.startSend();
         return ResponseEntity.ok("sent: " + sent.size());
     }
 
@@ -70,7 +70,7 @@ public class ParseController {
     @Transactional
     @RequestMapping("/setProcessing")
     public String setProcessing(@RequestParam int id) throws Exception {
-        NewsBlock nb = newsBlockRepo.findById(id).get();
+        NewsBlockEntity nb = newsBlockRepo.findById(id).get();
         if (null != nb)
         {nb.setProcessing(1);}
         newsBlockRepo.save(nb);

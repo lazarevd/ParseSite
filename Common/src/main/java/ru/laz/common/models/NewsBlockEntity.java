@@ -1,4 +1,4 @@
-package ru.laz.parser.db;
+package ru.laz.common.models;
 
 
 import javax.persistence.*;
@@ -6,7 +6,7 @@ import java.io.Serializable;
 
 @Entity
 @Table(name = "news_blocks")
-public class NewsBlock implements Serializable {
+public class NewsBlockEntity {
 
     @Id
     @Column(name = "id")
@@ -84,10 +84,10 @@ public class NewsBlock implements Serializable {
     @Override
     public boolean equals(Object o) {
         if (o == this) return true;
-        if (!(o instanceof NewsBlock)) {
+        if (!(o instanceof NewsBlockEntity)) {
             return false;
         }
-        NewsBlock nb = (NewsBlock) o;
+        NewsBlockEntity nb = (NewsBlockEntity) o;
         return this.id == nb.getId() && this.url.equals(nb.getUrl()) && this.title.equals(nb.getTitle()) && this.body.equals(nb.getBody() );
     }
 

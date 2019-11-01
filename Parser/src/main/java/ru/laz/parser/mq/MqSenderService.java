@@ -1,5 +1,6 @@
 package ru.laz.parser.mq;
 
+import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.core.AmqpTemplate;
@@ -7,7 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.laz.parser.db.NewsBlock;
+import ru.laz.common.models.NewsBlockDTO;
+import ru.laz.common.models.NewsBlockEntity;
 import ru.laz.parser.db.NewsBlockRepo;
 
 import java.util.ArrayList;
@@ -23,6 +25,9 @@ public class MqSenderService {
     private static final Logger logger = LoggerFactory.getLogger(MqSenderService.class);
 
     @Autowired
+    ModelMapper modelMapper;
+
+    @Autowired
     NewsBlockRepo newsBlockRepo;
 
     @Autowired
@@ -30,18 +35,19 @@ public class MqSenderService {
 
     private Map<Integer, Long> processTimes = new HashMap<>();
 
-    long expiryTime = 30000;
+    long expiryTime = 1000;
 
 
 
     //@Scheduled(fixedDelay = 10000)
     @Transactional
-    public List<NewsBlock> startSend() {
-        List<NewsBlock> unsent = newsBlockRepo.findBySentAndProcessing(0, 0);
+    public List<NewsBlockEntity> startSend() {
+        List<NewsBlockEntity> unsent = newsBlockRepo.findBySentAndProcessing(0, 0);
         unsent.forEach(nb -> {
             nb.setProcessing(1);
             logger.debug("start send" + nb);
-            rabbitTemplate.convertAndSend(nb);
+            NewsBlockDTO newsBlockDTO = modelMapper.map(nb, NewsBlockDTO.class);
+            rabbitTemplate.convertAndSend("toSender", newsBlockDTO);
             synchronized (processTimes) {
                 processTimes.put(nb.getId(), System.currentTimeMillis());
             }
@@ -63,7 +69,7 @@ public class MqSenderService {
             });
         }
 
-        List<NewsBlock> news = StreamSupport.stream(newsBlockRepo.findAll().spliterator(), false)
+        List<NewsBlockEntity> news = StreamSupport.stream(newsBlockRepo.findAll().spliterator(), false)
                 .filter(nb -> isExpired(nb.getId()))
                 .collect(Collectors.toList());
 

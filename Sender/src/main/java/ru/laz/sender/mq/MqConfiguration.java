@@ -22,11 +22,6 @@ public class MqConfiguration {
     @Value( "${parser.rabbitmq.host}" )
     private String mqHost;
 
-    @Bean
-    public Queue hello() {
-        return new Queue("toSender");
-    }
-
 
     @Bean
     public SimpleMessageListenerContainer messageListenerContainer() {
@@ -39,8 +34,7 @@ public class MqConfiguration {
 
     @Bean
     public ConnectionFactory rabbitConnectionFactory() {
-        CachingConnectionFactory connectionFactory =
-                new CachingConnectionFactory("localhost");
+        CachingConnectionFactory connectionFactory = new CachingConnectionFactory("localhost");
         connectionFactory.setUsername("guest");
         connectionFactory.setPassword("guest");
         return connectionFactory;

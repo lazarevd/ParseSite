@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
+import ru.laz.common.models.NewsBlockEntity;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -15,8 +16,8 @@ public class NewsBlockRepoCustomImpl implements NewsBlockRepoCustom {
     EntityManager em;
     @Override
     @Transactional(isolation= Isolation.SERIALIZABLE)
-    public void insertF(NewsBlock nb) {
-        NewsBlock nbl = em.find(NewsBlock.class, nb.getId());
+    public void insertF(NewsBlockEntity nb) {
+        NewsBlockEntity nbl = em.find(NewsBlockEntity.class, nb.getId());
         //em.detach(nbl);
         if (null == nbl) {
             logger.debug("Not Exist! " + nb.getId());

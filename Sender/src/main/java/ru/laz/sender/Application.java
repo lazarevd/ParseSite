@@ -1,4 +1,4 @@
-package ru.laz;
+package ru.laz.sender;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

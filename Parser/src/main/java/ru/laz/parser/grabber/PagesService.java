@@ -11,7 +11,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
-import ru.laz.parser.db.NewsBlock;
+import ru.laz.common.models.NewsBlockEntity;
 import ru.laz.parser.db.NewsBlockRepo;
 
 import java.nio.charset.StandardCharsets;
@@ -31,12 +31,12 @@ public class PagesService {
     NewsBlockRepo newsBlockRepo;
 
 
-    public List<NewsBlock> parseHtml(String html) {
+    public List<NewsBlockEntity> parseHtml(String html) {
         Document doc = Jsoup.parseBodyFragment(html);
         Element body = doc.body();
         Elements elems = body.getElementsByTag("main")
                 .first().getElementsByClass("item-block item-news");
-        List<NewsBlock> retList = new ArrayList<>();
+        List<NewsBlockEntity> retList = new ArrayList<>();
 
         logger.debug("elems " + elems.size());
         for (Element el : elems) {
@@ -44,7 +44,7 @@ public class PagesService {
             String date = el.getElementsByClass("date").text();
             String url = nElementHref.attr("href");
             String title = nElementHref.getElementsByTag("h2").first().text();
-            NewsBlock nb = new NewsBlock();
+            NewsBlockEntity nb = new NewsBlockEntity();
             nb.setTitle(title);
             nb.setUrl(url);
             nb.setDate(date);
@@ -93,9 +93,9 @@ public class PagesService {
             @Override
             public Object onCompleted() {
                 if (status == 200) {
-                    List<NewsBlock> news = parseHtml(sb.toString());
+                    List<NewsBlockEntity> news = parseHtml(sb.toString());
                     logger.debug("Fetched: " + news.size());
-                    for (NewsBlock nb : news) {
+                    for (NewsBlockEntity nb : news) {
                             newsBlockRepo.insertF(nb);
                     }
                 }

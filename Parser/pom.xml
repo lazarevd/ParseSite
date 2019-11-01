@@ -23,6 +23,12 @@
             <artifactId>spring-boot-starter-web</artifactId>
             <version>${spring.boot.version}</version>
         </dependency>
+        <dependency>
+            <groupId>ru.laz</groupId>
+            <artifactId>Common</artifactId>
+            <version>0.1.0</version>
+            <scope>compile</scope>
+        </dependency>
 
     </dependencies>
 
