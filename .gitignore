@@ -1,0 +1,6 @@
+*.db
+*.class
+*.jar
+*.log
+log
+logsSgi
