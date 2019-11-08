@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.laz.common.models.NewsBlockDTO;
 import ru.laz.common.models.NewsBlockEntity;
-import ru.laz.parser.db.NewsBlockRepo;
+import ru.laz.parser.db.repository.NewsBlockRepo;
 
 import java.util.ArrayList;
 import java.util.HashMap;

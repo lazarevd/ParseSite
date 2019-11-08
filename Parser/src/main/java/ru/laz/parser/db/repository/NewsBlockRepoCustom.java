@@ -1,4 +1,4 @@
-package ru.laz.parser.db;
+package ru.laz.parser.db.repository;
 
 import ru.laz.common.models.NewsBlockEntity;
 

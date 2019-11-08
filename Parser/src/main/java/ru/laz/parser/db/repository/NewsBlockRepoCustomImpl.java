@@ -1,4 +1,4 @@
-package ru.laz.parser.db;
+package ru.laz.parser.db.repository;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

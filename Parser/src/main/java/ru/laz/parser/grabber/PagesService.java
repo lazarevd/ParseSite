@@ -12,7 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import ru.laz.common.models.NewsBlockEntity;
-import ru.laz.parser.db.NewsBlockRepo;
+import ru.laz.parser.db.repository.NewsBlockRepo;
 
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;

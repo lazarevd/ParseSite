@@ -1,4 +1,4 @@
-package ru.laz.parser.db;
+package ru.laz.parser.db.config;
 
 import org.hibernate.boot.model.naming.Identifier;
 import org.hibernate.boot.model.naming.ImplicitNamingStrategyJpaCompliantImpl;

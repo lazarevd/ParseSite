@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import ru.laz.common.models.NewsBlockEntity;
-import ru.laz.parser.db.NewsBlockRepo;
+import ru.laz.parser.db.repository.NewsBlockRepo;
 import ru.laz.parser.mq.MqSenderService;
 
 import javax.transaction.Transactional;
