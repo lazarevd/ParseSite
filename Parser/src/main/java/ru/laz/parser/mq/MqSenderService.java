@@ -39,7 +39,7 @@ public class MqSenderService {
 
 
 
-    //@Scheduled(fixedDelay = 10000)
+    @Scheduled(fixedDelay = 2000)
     @Transactional
     public List<NewsBlockEntity> startSend() {
         List<NewsBlockEntity> unsent = newsBlockRepo.findBySentAndProcessing(0, 0);

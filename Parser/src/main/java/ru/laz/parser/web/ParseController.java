@@ -1,5 +1,6 @@
 package ru.laz.parser.web;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -64,6 +65,21 @@ public class ParseController {
 
         List<NewsBlockEntity> sent = mqSenderService.startSend();
         return ResponseEntity.ok("sent: " + sent.size());
+    }
+
+
+    @Transactional
+    @RequestMapping("/setUnsent")
+    public String setUnsent(@RequestParam int id) throws JsonProcessingException {
+        NewsBlockEntity nb = newsBlockRepo.findById(id).get();
+        if (null != nb)
+        {
+            nb.setProcessing(0);
+            nb.setSent(0);
+        }
+        newsBlockRepo.save(nb);
+        rabbitTemplate.convertAndSend(nb);
+        return objectMapper.writeValueAsString(nb);
     }
 
 

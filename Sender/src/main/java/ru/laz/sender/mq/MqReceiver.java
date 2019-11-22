@@ -11,8 +11,4 @@ public class MqReceiver {
     public void receive(NewsBlockDTO in) {
         System.out.println(" [x] Received '" + in.getTitle() + "'");
     }
-
-
-
-
 }
