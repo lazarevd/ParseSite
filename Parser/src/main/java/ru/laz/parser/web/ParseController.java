@@ -2,17 +2,20 @@ package ru.laz.parser.web;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.modelmapper.ModelMapper;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import ru.laz.common.models.NewsBlockDTO;
 import ru.laz.common.models.NewsBlockEntity;
 import ru.laz.parser.db.repository.NewsBlockRepo;
 import ru.laz.parser.mq.MqSenderService;
 
 import javax.transaction.Transactional;
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -24,6 +27,9 @@ public class ParseController {
     ObjectMapper objectMapper;
 
     @Autowired
+    ModelMapper modelMapper;
+
+    @Autowired
     MqSenderService mqSenderService;
 
     @Autowired
@@ -33,7 +39,9 @@ public class ParseController {
     public String getDbJson() throws Exception {
         Iterable<NewsBlockEntity> it = newsBlockRepo.findAll();
         List<NewsBlockEntity> nBlocks  = (List<NewsBlockEntity>) newsBlockRepo.findAll();
-        return objectMapper.writeValueAsString(nBlocks);
+        List<NewsBlockDTO> nbdto = new ArrayList<>();
+        nBlocks.forEach((nb) -> nbdto.add(modelMapper.map(nb, NewsBlockDTO.class)));
+        return objectMapper.writeValueAsString(nbdto);
     }
 
 
@@ -62,8 +70,7 @@ public class ParseController {
 
     @RequestMapping("/startSend")
     public ResponseEntity startSend() {
-
-        List<NewsBlockEntity> sent = mqSenderService.startSend();
+        List<NewsBlockDTO> sent = mqSenderService.startSend();
         return ResponseEntity.ok("sent: " + sent.size());
     }
 
@@ -78,7 +85,6 @@ public class ParseController {
             nb.setSent(0);
         }
         newsBlockRepo.save(nb);
-        rabbitTemplate.convertAndSend(nb);
         return objectMapper.writeValueAsString(nb);
     }
 
@@ -93,5 +99,4 @@ public class ParseController {
         rabbitTemplate.convertAndSend(nb);
         return objectMapper.writeValueAsString(nb);
     }
-
 }
