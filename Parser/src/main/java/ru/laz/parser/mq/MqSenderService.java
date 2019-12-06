@@ -6,14 +6,17 @@ import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.core.AmqpTemplate;
+import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.laz.common.models.NewsBlockDTO;
 import ru.laz.common.models.NewsBlockEntity;
+import ru.laz.common.models.NewsBlockSendStatusDTO;
 import ru.laz.parser.db.repository.NewsBlockRepo;
 
+import java.io.IOException;
 import java.util.*;
 
 @Service
@@ -32,7 +35,8 @@ public class MqSenderService {
     @Autowired
     private AmqpTemplate rabbitTemplate;
 
-    private final String QUEUE_NAME = "toSender";
+    private final String SENDER_QUEUE = "toSender";
+    private final String STATUS_QUEUE = "toParser";
 
     private final Map<Integer, NewsBlockDTO> processing = Collections.synchronizedMap(new HashMap<>());
 
@@ -66,7 +70,7 @@ public class MqSenderService {
         } catch (JsonProcessingException e) {
             log.error(e.getMessage());
         }
-        rabbitTemplate.convertAndSend(QUEUE_NAME, jsonNB);
+        rabbitTemplate.convertAndSend(SENDER_QUEUE, jsonNB);
     }
 
 
@@ -90,6 +94,26 @@ public class MqSenderService {
             newsBlockRepo.saveAll(news);
         }
     }
+
+
+    @RabbitListener(queues = STATUS_QUEUE)
+    @Transactional
+    private void processSent(String statStr) throws IOException {
+        log.info("Status received" + statStr);
+        NewsBlockSendStatusDTO status = objectMapper.readValue(statStr, NewsBlockSendStatusDTO.class);
+        Optional<NewsBlockEntity> nbOptional = newsBlockRepo.findById(status.id);
+        nbOptional.ifPresent(nb -> {
+            if (status.sent) {
+                nb.setSent(1);
+                nb.setProcessing(0);
+                newsBlockRepo.save(nb);
+            }
+        });
+    }
+
+
+
+
 
     private List<NewsBlockDTO> convertToDtos(List<NewsBlockEntity> input) {
         List<NewsBlockDTO> returnList = new ArrayList<>();
