@@ -15,33 +15,26 @@ import ru.laz.common.models.NewsBlockEntity;
 import ru.laz.parser.db.repository.NewsBlockRepo;
 
 import java.util.*;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
 @Service
 public class MqSenderService {
 
-    private static final Logger logger = LoggerFactory.getLogger(MqSenderService.class);
+    private static final Logger log = LoggerFactory.getLogger(MqSenderService.class);
 
     private final static int EXPIRY_TIME = 10000;
 
     @Autowired
-    ModelMapper modelMapper;
-
+    private ModelMapper modelMapper;
     @Autowired
-    ObjectMapper objectMapper;
-
+    private ObjectMapper objectMapper;
     @Autowired
-    NewsBlockRepo newsBlockRepo;
-
+    private NewsBlockRepo newsBlockRepo;
     @Autowired
-    AmqpTemplate rabbitTemplate;
+    private AmqpTemplate rabbitTemplate;
 
-    private Map<Integer, NewsBlockDTO> processing = Collections.synchronizedMap(new HashMap<>());
+    private final String QUEUE_NAME = "toSender";
 
-    long expiryTime = 1000;
-
-
+    private final Map<Integer, NewsBlockDTO> processing = Collections.synchronizedMap(new HashMap<>());
 
     @Transactional
     List<NewsBlockDTO> findAndSetProcessingUnsent() {
@@ -51,19 +44,14 @@ public class MqSenderService {
         return convertToDtos(unsent);
     }
 
-    @Scheduled(fixedDelay = 2000)
+    @Scheduled(fixedDelay = 1000)
     public List<NewsBlockDTO> startSend() {
+        cleanExpires();
         List<NewsBlockDTO> unsent = findAndSetProcessingUnsent();
         unsent.forEach(nb -> {
-            logger.debug("start send" + nb);
-            String jsonNB = null;
-            try {
-                jsonNB = objectMapper.writeValueAsString(nb);
-            } catch (JsonProcessingException e) {
-                logger.error(e.getMessage());
-            }
-            rabbitTemplate.convertAndSend("toSender", jsonNB);
+            log.info("start send "+ nb.getId());
             synchronized (processing) {
+                sendToMq(nb);
                 nb.setCreatedTime(System.currentTimeMillis());
                 processing.put(nb.getId(), nb);
             }
@@ -71,9 +59,19 @@ public class MqSenderService {
         return unsent;
     }
 
-    @Scheduled(fixedDelay = 1000)
+    private void sendToMq(NewsBlockDTO nbDto) {
+        String jsonNB = null;
+        try {
+            jsonNB = objectMapper.writeValueAsString(nbDto);
+        } catch (JsonProcessingException e) {
+            log.error(e.getMessage());
+        }
+        rabbitTemplate.convertAndSend(QUEUE_NAME, jsonNB);
+    }
+
+
     @Transactional
-    public void processExpires() {
+    private void cleanExpires() {
         List<Integer> processingIds = new ArrayList<>();
         synchronized (processing) {
             processing.entrySet().forEach(nb -> {
@@ -86,14 +84,12 @@ public class MqSenderService {
                 if (false == processingIds.contains(nb.getId())) {
                     nb.setProcessing(0);
                     processing.remove(nb.getId());
+                    log.info("cleaned expired " + nb.getId());
                 }
             });
             newsBlockRepo.saveAll(news);
         }
     }
-
-
-
 
     private List<NewsBlockDTO> convertToDtos(List<NewsBlockEntity> input) {
         List<NewsBlockDTO> returnList = new ArrayList<>();
