@@ -29,7 +29,7 @@ public class MqSenderService {
     private static final Logger log = LoggerFactory.getLogger(MqSenderService.class);
 
     @Value("${news.block.expiry}")
-    private static int newsBlockExpiry = 10000;
+    private int newsBlockExpiry;
 
     @Autowired
     private ModelMapper modelMapper;
