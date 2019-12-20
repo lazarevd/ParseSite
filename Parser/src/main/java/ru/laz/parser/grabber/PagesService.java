@@ -9,6 +9,7 @@ import org.jsoup.select.Elements;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import ru.laz.common.models.NewsBlockEntity;
@@ -21,6 +22,7 @@ import java.util.List;
 
 @Service
 public class PagesService {
+
 
     private final static Logger logger = LoggerFactory.getLogger(PagesService.class);
 
@@ -54,7 +56,7 @@ public class PagesService {
     }
 
 
-    @Scheduled(fixedDelay = 30000)
+    @Scheduled(fixedDelayString = "${news.block.refresh}")
     public void getPageContent() {
         BoundRequestBuilder request = client.prepareGet("http://mosfarr.ru/category/новости/");
         request.execute(new AsyncHandler<Object>() {

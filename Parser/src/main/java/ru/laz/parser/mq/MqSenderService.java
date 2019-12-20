@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,12 +20,16 @@ import ru.laz.parser.db.repository.NewsBlockRepo;
 import java.io.IOException;
 import java.util.*;
 
+
+
+
 @Service
 public class MqSenderService {
 
     private static final Logger log = LoggerFactory.getLogger(MqSenderService.class);
 
-    private final static int EXPIRY_TIME = 10000;
+    @Value("${news.block.expiry}")
+    private static int newsBlockExpiry = 10000;
 
     @Autowired
     private ModelMapper modelMapper;
@@ -79,7 +84,7 @@ public class MqSenderService {
         List<Integer> processingIds = new ArrayList<>();
         synchronized (processing) {
             processing.entrySet().forEach(nb -> {
-                if (false == nb.getValue().isExpired(EXPIRY_TIME)) {
+                if (false == nb.getValue().isExpired(newsBlockExpiry)) {
                     processingIds.add(nb.getKey());
                 }
             });

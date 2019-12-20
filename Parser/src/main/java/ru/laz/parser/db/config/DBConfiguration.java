@@ -13,7 +13,7 @@ import javax.sql.DataSource;
 
 @Configuration
 @EntityScan("ru.laz.common.models")
-@PropertySource("classpath:application.properties")
+@PropertySource("file:config/application.properties")
 public class DBConfiguration {
 
     @Value("${driverClassName}")
