@@ -74,7 +74,8 @@ public class TelegramSender {
         String jsonTelegramDTO = objectMapper.writeValueAsString(telegramDTO);
         String fullUrl = botProtocol+"://"+botUrl+botToken+SEND_METHOD;
         BoundRequestBuilder request = client.preparePost(fullUrl)
-                .setBody(jsonTelegramDTO);
+                .setBody(jsonTelegramDTO)
+                .setHeader("Content-Type", "application/json");
         log.info("Strart send: "+ jsonTelegramDTO);
         request.execute(new AsyncHandler<Object>() {
             @Override
