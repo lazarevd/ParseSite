@@ -76,7 +76,7 @@ public class ParseController {
         List<NewsBlockDTO> sent = mqSenderService.startSend();
         return ResponseEntity.ok("sent: " + sent.size());
     }
-
+*/
 
     @Transactional
     @RequestMapping("/setUnsent")
@@ -91,7 +91,7 @@ public class ParseController {
         return objectMapper.writeValueAsString(nb);
     }
 
-
+/*
     @Transactional
     @RequestMapping("/setProcessing")
     public String setProcessing(@RequestParam int id) throws Exception {
