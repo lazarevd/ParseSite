@@ -69,15 +69,11 @@ public class TelegramSender {
     }
 
 
-    private String prepareText(NewsBlockDTO newsBlockDTO) {
-        String ret = "<a href\""+newsBlockDTO.getTitle()+"\">"+newsBlockDTO.getUrl()+"</a>";
-        log.info("Prepared message: " + ret);
-        return ret;
-    }
+
 
     private void sendToChannel (NewsBlockDTO newsBlockDTO) throws JsonProcessingException {
         int id = newsBlockDTO.getId();
-        TelegramDTO telegramDTO = new TelegramDTO(botChatId, prepareText(newsBlockDTO));
+        TelegramDTO telegramDTO = new TelegramDTO(botChatId, newsBlockDTO.getUrl() + " " + newsBlockDTO.getTitle());
         String jsonTelegramDTO = objectMapper.writeValueAsString(telegramDTO);
         String fullUrl = botProtocol+"://"+botUrl+botToken+SEND_METHOD;
         BoundRequestBuilder request = client.preparePost(fullUrl)
@@ -108,6 +104,7 @@ public class TelegramSender {
 
             @Override
             public State onBodyPartReceived(HttpResponseBodyPart httpResponseBodyPart) {
+                log.info(httpResponseBodyPart.toString());
                 return null;
             }
 
