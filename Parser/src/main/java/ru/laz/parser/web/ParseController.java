@@ -102,6 +102,6 @@ public class ParseController {
         rabbitTemplate.convertAndSend(nb);
         return objectMapper.writeValueAsString(nb);
     }
-    
+
      */
 }
