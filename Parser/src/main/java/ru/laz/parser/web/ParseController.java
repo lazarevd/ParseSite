@@ -35,6 +35,9 @@ public class ParseController {
     @Autowired
     RabbitTemplate rabbitTemplate;
 
+
+    /*
+
     @RequestMapping("/getAllNews")
     public String getDbJson() throws Exception {
         Iterable<NewsBlockEntity> it = newsBlockRepo.findAll();
@@ -99,4 +102,6 @@ public class ParseController {
         rabbitTemplate.convertAndSend(nb);
         return objectMapper.writeValueAsString(nb);
     }
+    
+     */
 }
