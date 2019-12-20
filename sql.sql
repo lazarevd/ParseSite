@@ -9,6 +9,8 @@ create table news_blocks
     
  drop table news_blocks;
 
+delete from news_blocks
+
 
 select sent, processing from news_blocks where id = -176176341
 commit
