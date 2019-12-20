@@ -20,6 +20,15 @@
 
     <artifactId>Sender</artifactId>
     <build>
+        <resources><!-- DO not pack props-->
+            <resource>
+                <directory>src/main/resources</directory>
+                <excludes>
+                    <exclude>*.properties</exclude>
+                </excludes>
+                <filtering>false</filtering>
+            </resource>
+        </resources>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
