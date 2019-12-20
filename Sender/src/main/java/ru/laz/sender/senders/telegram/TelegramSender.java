@@ -72,7 +72,8 @@ public class TelegramSender {
         int id = newsBlockDTO.getId();
         TelegramDTO telegramDTO = new TelegramDTO(botChatId, newsBlockDTO.getTitle());
         String jsonTelegramDTO = objectMapper.writeValueAsString(telegramDTO);
-        BoundRequestBuilder request = client.preparePost(botProtocol+"://"+botUrl+botToken+SEND_METHOD)
+        String fullUrl = botProtocol+"://"+botUrl+botToken+SEND_METHOD;
+        BoundRequestBuilder request = client.preparePost(fullUrl)
                 .setBody(jsonTelegramDTO);
         log.info("Strart send: "+ jsonTelegramDTO);
         request.execute(new AsyncHandler<Object>() {
@@ -84,7 +85,7 @@ public class TelegramSender {
                 else {
                     log.error("Failed to send :" + ", "
                             + jsonTelegramDTO + ", "
-                            + response.getRemoteAddress() + ", "
+                            + fullUrl + ", "
                             + response.getStatusCode() + ", "
                             + response.getStatusText());
                 }
