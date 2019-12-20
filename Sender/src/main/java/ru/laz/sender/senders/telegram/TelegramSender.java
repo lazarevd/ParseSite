@@ -24,32 +24,34 @@ public class TelegramSender {
 
     private Set<Integer> process = new HashSet<>();
 
+    @Value("${telegram.bot.protocol}")
+    private String botProtocol;
     @Value("${telegram.bot.url}" )
-    String botUrl;
+    private String botUrl;
     @Value("${telegram.bot.token}")
-    String botToken;
+    private String botToken;
     private final String SEND_METHOD = "/sendMessage";
     @Value("${async.http.connect.timeout}")
-    int httpConnectionTimeout;
+    private int httpConnectionTimeout;
 
     @Value("${telegram.bot.chat_id}")
     int botChatId;
 
 
     @Autowired
-    MqService mqService;
+    private MqService mqService;
     @Autowired
-    ObjectMapper objectMapper;
+    private ObjectMapper objectMapper;
 
     private final static Logger log = LoggerFactory.getLogger(TelegramSender.class);
 
-    DefaultAsyncHttpClientConfig.Builder clientBuilder = Dsl.config().setConnectTimeout(httpConnectionTimeout);
-    AsyncHttpClient client = Dsl.asyncHttpClient(clientBuilder);
+    private DefaultAsyncHttpClientConfig.Builder clientBuilder = Dsl.config().setConnectTimeout(httpConnectionTimeout);
+    private AsyncHttpClient client = Dsl.asyncHttpClient(clientBuilder);
 
     @PostConstruct
     public void init() {
         log.info(new File("").getAbsolutePath());
-        log.info(botUrl+botToken);
+        log.info(botProtocol+"://"+botUrl+botToken);
     }
 
 
@@ -70,12 +72,12 @@ public class TelegramSender {
         int id = newsBlockDTO.getId();
         TelegramDTO telegramDTO = new TelegramDTO(botChatId, newsBlockDTO.getTitle());
         String jsonTelegramDTO = objectMapper.writeValueAsString(telegramDTO);
-        BoundRequestBuilder request = client.preparePost(botUrl+botToken+SEND_METHOD)
+        BoundRequestBuilder request = client.preparePost(botProtocol+"://"+botUrl+botToken+SEND_METHOD)
                 .setBody(jsonTelegramDTO);
         log.info("Strart send: "+ jsonTelegramDTO);
         request.execute(new AsyncHandler<Object>() {
             @Override
-            public State onStatusReceived(HttpResponseStatus response) throws Exception {
+            public State onStatusReceived(HttpResponseStatus response) {
                 if (response.getStatusCode() == 200) {
                     log.info("Sent :" + jsonTelegramDTO);
                     mqService.sendOkStatus(newsBlockDTO.getId()); }
@@ -91,12 +93,12 @@ public class TelegramSender {
             }
 
             @Override
-            public State onHeadersReceived(HttpHeaders httpHeaders) throws Exception {
+            public State onHeadersReceived(HttpHeaders httpHeaders) {
                 return null;
             }
 
             @Override
-            public State onBodyPartReceived(HttpResponseBodyPart httpResponseBodyPart) throws Exception {
+            public State onBodyPartReceived(HttpResponseBodyPart httpResponseBodyPart) {
                 return null;
             }
 
@@ -107,7 +109,7 @@ public class TelegramSender {
             }
 
             @Override
-            public Object onCompleted() throws Exception {
+            public Object onCompleted() {
                 process.remove(id);
                 return null;
             }
