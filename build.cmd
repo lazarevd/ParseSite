@@ -7,4 +7,4 @@ cp -f /root/java/Build/ParseSite/Sender/target/Sender-0.1.0.jar /root/java/Sende
 cd /root/java/Parser/
 java -jar Parser-0.1.0.jar
 cd /root/java/Sender/
-java -jar Sender-0.1.0.jar
+java -jar /root/java/Sender/Sender-0.1.0.jar
