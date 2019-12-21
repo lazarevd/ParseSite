@@ -19,7 +19,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Service
-@PropertySource("classpath:/config/telegram.properties")
+@PropertySource("telegram.properties")
 public class TelegramSender {
 
     private Set<Integer> process = new HashSet<>();
