@@ -11,6 +11,7 @@
         <module>Sender</module>
         <module>Parser</module>
         <module>ParserMosfarr</module>
+        <module>ParserFdsarr</module>
         <module>Common</module>
     </modules>
 

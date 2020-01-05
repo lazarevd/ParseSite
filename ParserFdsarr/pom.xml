@@ -12,7 +12,7 @@
 
     <packaging>jar</packaging>
 
-    <artifactId>ParserMosfarr</artifactId>
+    <artifactId>ParserFdsarr</artifactId>
 
     <dependencies>
         <dependency>
@@ -22,7 +22,7 @@
         </dependency>
     </dependencies>
     <build>
-        <finalName>ParserMosfarr</finalName>
+        <finalName>ParserFdsarr</finalName>
         <resources><!-- DO not pack props-->
             <resource>
                 <directory>src/main/resources</directory>
@@ -80,15 +80,7 @@
                 </executions>
             </plugin>
         </plugins>
-        <!--<resources>
-            <resource>
-                <directory>src/main/resources</directory>
-                <filtering>true</filtering>
-                <excludes>
-                    <exclude>**/application.properties</exclude>
-                </excludes>
-            </resource>
-        </resources>-->
     </build>
+
 
 </project>
