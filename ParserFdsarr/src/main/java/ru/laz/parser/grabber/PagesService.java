@@ -1,6 +1,10 @@
 package ru.laz.parser.grabber;
 
 import io.netty.handler.codec.http.HttpHeaders;
+import io.netty.handler.ssl.SslContext;
+import io.netty.handler.ssl.SslContextBuilder;
+import io.netty.handler.ssl.SslProvider;
+import io.netty.handler.ssl.util.InsecureTrustManagerFactory;
 import org.asynchttpclient.*;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -14,6 +18,8 @@ import org.springframework.stereotype.Service;
 import ru.laz.common.models.NewsBlockEntity;
 import ru.laz.parser.db.repository.NewsBlockRepo;
 
+import javax.annotation.PostConstruct;
+import javax.net.ssl.SSLException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
@@ -25,8 +31,32 @@ public class PagesService {
 
     private final static Logger logger = LoggerFactory.getLogger(PagesService.class);
 
-    DefaultAsyncHttpClientConfig.Builder clientBuilder = Dsl.config().setConnectTimeout(500);
-    AsyncHttpClient client = Dsl.asyncHttpClient(clientBuilder);
+
+    AsyncHttpClient client;
+
+
+    @PostConstruct
+    public void init() {
+        SslContext sslContext = null;
+
+        {
+            try {
+                sslContext = SslContextBuilder
+                        .forClient()
+                        .sslProvider(SslProvider.JDK)
+                        .trustManager(InsecureTrustManagerFactory.INSTANCE)
+                        .build();
+            } catch (SSLException e) {
+                e.printStackTrace();
+            }
+        }
+
+        DefaultAsyncHttpClientConfig.Builder clientBuilder = Dsl.config()
+                .setConnectTimeout(3500)
+                .setSslContext(sslContext);//ignore wrong certs
+        client = Dsl.asyncHttpClient(clientBuilder);
+    }
+
 
     @Autowired
     private NewsBlockRepo newsBlockRepo;
@@ -44,11 +74,10 @@ public class PagesService {
         List<NewsBlockEntity> retList = new ArrayList<>();
         logger.debug("elems " + elems.size());
         for (Element el : elems) {
-            Element nElementHref = el.getElementsByTag("a").first();
-
-            String date = el.getElementsByClass("date").text();
-            String url = nElementHref.attr("href");
-            String title = nElementHref.getElementsByTag("h2").first().text();
+            Element li = el.getElementsByTag("li").first();
+            String url = "https://fdsarr.ru" + li.getElementsByTag("a").first().attr("href");
+            String date = li.getElementsByClass("arr-news").first().text();
+            String title = li.getElementsByTag("h3").first().text();
 
             NewsBlockEntity nb = new NewsBlockEntity();
             nb.setTitle(title);
@@ -62,7 +91,7 @@ public class PagesService {
 
     @Scheduled(fixedDelayString = "${news.block.refresh}")
     public void getPageContent() {
-        BoundRequestBuilder request = client.prepareGet("http://mosfarr.ru/category/новости/");
+        BoundRequestBuilder request = client.prepareGet("https://fdsarr.ru/arr/news/");
         request.execute(new AsyncHandler<Object>() {
             int status;
             StringBuilder sb = new StringBuilder();
@@ -93,7 +122,7 @@ public class PagesService {
 
             @Override
             public void onThrowable(Throwable t) {
-
+System.out.println(t.getMessage());
             }
 
             @Override
