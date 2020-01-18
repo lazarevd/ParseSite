@@ -34,6 +34,7 @@ public class PagesService {
 
     AsyncHttpClient client;
 
+    private final String BASE_URL = "https://fdsarr.ru";
 
     @PostConstruct
     public void init() {
@@ -71,11 +72,23 @@ public class PagesService {
                 .getElementsByClass("news-list div-with-shadow").first()
                 .getElementsByTag("ul").first()
                 .getElementsByTag("li");
+
+        Element elemTop = body.getElementsByTag("section").first()
+                .getElementById("newswrap")
+                .getElementsByClass("content-wrap").first()
+                .getElementsByClass("news-list div-with-shadow").first()
+                .getElementsByClass("top-news").first();
+
+        String urlTop = BASE_URL + elemTop.getElementsByTag("a").first().attr("href");
+        String dateTop = elemTop.getElementsByClass("arr-news").first().text();
+        String titleTop = elemTop.getElementsByTag("div").first().getElementsByTag("h3").first().text();
+
+
         List<NewsBlockEntity> retList = new ArrayList<>();
         logger.debug("elems " + elems.size());
         for (Element el : elems) {
             Element li = el.getElementsByTag("li").first();
-            String url = "https://fdsarr.ru" + li.getElementsByTag("a").first().attr("href");
+            String url = BASE_URL + li.getElementsByTag("a").first().attr("href");
             String date = li.getElementsByClass("arr-news").first().text();
             String title = li.getElementsByTag("h3").first().text();
 
@@ -91,7 +104,7 @@ public class PagesService {
 
     @Scheduled(fixedDelayString = "${news.block.refresh}")
     public void getPageContent() {
-        BoundRequestBuilder request = client.prepareGet("https://fdsarr.ru/arr/news/");
+        BoundRequestBuilder request = client.prepareGet(BASE_URL+"/arr/news/");
         request.execute(new AsyncHandler<Object>() {
             int status;
             StringBuilder sb = new StringBuilder();
