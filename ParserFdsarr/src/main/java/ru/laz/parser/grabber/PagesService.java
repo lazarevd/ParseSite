@@ -81,9 +81,12 @@ public class PagesService {
         String urlTop = BASE_URL + elemTop.getElementsByTag("a").first().attr("href");
         String dateTop = elemTop.getElementsByClass("arr-news").first().text();
         String titleTop = elemTop.getElementsByTag("div").first().getElementsByTag("h3").first().text();
-
-
+        NewsBlockEntity nbt = new NewsBlockEntity();
+        nbt.setTitle(titleTop);
+        nbt.setUrl(urlTop);
+        nbt.setDate(dateTop);
         List<NewsBlockEntity> retList = new ArrayList<>();
+        retList.add(nbt);
         logger.debug("elems " + elems.size());
         for (Element el : elems) {
             Element li = el.getElementsByTag("li").first();
@@ -97,6 +100,7 @@ public class PagesService {
             nb.setDate(date);
             retList.add(nb);
         }
+
         return retList;
     }
 
