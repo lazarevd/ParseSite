@@ -30,8 +30,7 @@ public class PagesService {
 
 
     private final static Logger logger = LoggerFactory.getLogger(PagesService.class);
-
-
+    
     AsyncHttpClient client;
 
     private final String BASE_URL = "https://fdsarr.ru";
